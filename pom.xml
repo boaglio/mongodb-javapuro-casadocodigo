@@ -12,11 +12,15 @@
 	<url>http://www.casadocodigo.com.br</url>
 
 	<dependencies>
+
+		<!-- MongoDB Java driver -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>3.3.0</version>
 		</dependency>
+
+		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -24,10 +28,12 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+
+
 	</dependencies>
 	<build>
 		<plugins>

@@ -10,9 +10,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.boaglio.casadocodigo.mongodb.dto.Seriado;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -26,11 +24,6 @@ public class SeriadosDAO {
 
 	private MongoCollection<Document> seriadosCollection;
 
-	public Mongo mongo() throws Exception {
-
-		MongoClient mongoClient = new MongoClient(new ServerAddress(host,port));
-		return mongoClient;
-	}
 
 	public SeriadosDAO() {
 		try {
@@ -40,6 +33,9 @@ public class SeriadosDAO {
 			MongoDatabase db = mongoClient.getDatabase(database);
 
 			seriadosCollection = db.getCollection(collection);
+
+			mongoClient.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
