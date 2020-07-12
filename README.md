@@ -33,3 +33,13 @@ db.seriados.findOne()
     ]
 }
 ```
+
+# Rodando
+
+
+```
+ mvn clean install 
+ java -jar target/seriados-javapuro.jar
+
+```
+
