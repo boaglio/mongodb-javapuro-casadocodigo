@@ -7,13 +7,21 @@ mongodb-javapuro-casadocodigo
 * Database.....: *test*
 * Collection...: *seriados*
 
+* Carga 
+
+```
+ mongo < db/seriados.js
+
+```
+
+
 * Exemplo de documento
 
 ```
 db.seriados.findOne()
  
 {
-    "_id" : ObjectId("53fd3aa68fc5e9cd4b8b4567"),
+    "_id" : 1,
     "nome" : "Breaking Bad",
     "personagens" : [ 
         "Walter White", 

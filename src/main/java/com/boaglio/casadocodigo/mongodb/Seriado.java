@@ -1,23 +1,21 @@
-package com.boaglio.casadocodigo.mongodb.dto;
+package com.boaglio.casadocodigo.mongodb;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.bson.types.ObjectId;
 
 public class Seriado implements Serializable {
 
 	private static final long serialVersionUID = -6593997414513265205L;
 
-	private ObjectId id;
+	private Object id;
 	private String nome;
 	private List<String> personagens;
 
-	public ObjectId getId() {
+	public Object getId() {
 		return id;
 	}
 
-	public void setId(ObjectId id) {
+	public void setId(Object id) {
 		this.id = id;
 	}
 

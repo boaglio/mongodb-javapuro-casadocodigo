@@ -9,13 +9,13 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import com.boaglio.casadocodigo.mongodb.dto.Seriado;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-public class SeriadosDAO {
+public class SeriadosRepository {
 
 	private final String host = "localhost";
 	private final int port = 27017;
@@ -24,17 +24,19 @@ public class SeriadosDAO {
 
 	private MongoCollection<Document> seriadosCollection;
 
-
-	public SeriadosDAO() {
+	public SeriadosRepository() {
 		try {
 
-			MongoClient mongoClient = new MongoClient(host, port);
+			MongoClient mongoClient = MongoClients.create("mongodb://" + host + ":" + port);
 
 			MongoDatabase db = mongoClient.getDatabase(database);
 
-			seriadosCollection = db.getCollection(collection);
+			System.out.println("== Collections do database " + database);
+			for (String name : db.listCollectionNames()) {
+				System.out.println(name);
+			}
 
-			mongoClient.close();
+			seriadosCollection = db.getCollection(collection);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,19 +47,23 @@ public class SeriadosDAO {
 	public List<Seriado> findAll() {
 
 		List<Seriado> seriados = new ArrayList<Seriado>();
-		MongoCursor<Document> cursor = seriadosCollection.find().iterator();
 
-		while (cursor.hasNext()) {
-			Document resultElement = cursor.next();
+		try (MongoCursor<Document> cursor = seriadosCollection.find().iterator()) {
 
-			Seriado seriado = new Seriado();
-			seriado.setId((ObjectId) resultElement.get("_id"));
-			seriado.setNome((String) resultElement.get("nome"));
-			seriado.setPersonagens((List<String>) resultElement.get("personagens"));
+			while (cursor.hasNext()) {
 
-			seriados.add(seriado);
+				Document resultElement = cursor.next();
 
-			System.out.println("Seriado lido = " + seriado);
+				Seriado seriado = new Seriado();
+				seriado.setId(resultElement.get("_id"));
+				seriado.setNome((String) resultElement.get("nome"));
+				seriado.setPersonagens((List<String>) resultElement.get("personagens"));
+
+				seriados.add(seriado);
+
+				System.out.println("Seriado lido = " + seriado);
+
+			}
 		}
 
 		return seriados;
@@ -68,7 +74,7 @@ public class SeriadosDAO {
 
 		Seriado seriado = new Seriado();
 		System.out.println("busca por id = " + id);
-		Document documento = seriadosCollection.find(eq("_id",new ObjectId(id))).first();
+		Document documento = seriadosCollection.find(eq("_id", new ObjectId(id))).first();
 
 		System.out.println("Seriado lido = " + documento);
 		seriado.setId((ObjectId) documento.get("_id"));
@@ -81,8 +87,9 @@ public class SeriadosDAO {
 	public void insert(Seriado seriado) {
 
 		Document seriadoParaGravar = new Document();
-		seriadoParaGravar.append("nome",seriado.getNome());
-		seriadoParaGravar.append("personagens",seriado.getPersonagens());
+		seriadoParaGravar.append("_id", seriado.getId());
+		seriadoParaGravar.append("nome", seriado.getNome());
+		seriadoParaGravar.append("personagens", seriado.getPersonagens());
 
 		seriadosCollection.insertOne(seriadoParaGravar);
 
@@ -92,16 +99,16 @@ public class SeriadosDAO {
 
 	public void update(Seriado seriado) {
 
-		seriadosCollection.updateOne(eq("_id",seriado.getId()),set("nome", seriado.getNome()));
-		seriadosCollection.updateOne(eq("_id",seriado.getId()),set("personagens", seriado.getPersonagens()));
+		seriadosCollection.updateOne(eq("_id", seriado.getId()), set("nome", seriado.getNome()));
+		seriadosCollection.updateOne(eq("_id", seriado.getId()), set("personagens", seriado.getPersonagens()));
 
 		System.out.println("seriado alterado = " + seriado);
 
 	}
 
-	public void remove(String id) {
+	public void remove(Object id) {
 
-		seriadosCollection.deleteOne(eq("_id",new ObjectId(id)));
+		seriadosCollection.deleteOne(eq("_id", id));
 
 		System.out.println("seriado removido = " + id);
 
